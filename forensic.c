@@ -50,8 +50,25 @@ int check_flags(int number_arguments, char *argv[])
       case 'h':
         info.flag_h = true;
         i++;
-        if
+        for (int j = 0; j < strlen(argv[i]); j++) {
+          char comma_str[]=",";
+          char *h_arg;
+          h_arg = strtok(argv[i],comma_str);
 
+          while(h_arg != NULL)
+          {
+              if(strcmp(h_arg,"md5") == 0){
+                  info.md5 = true;}
+              else{ if(strcmp(h_arg,"sha1") == 0){
+                      info.sha1 = true;}
+                    else{ if(strcmp(h_arg,"sha256") == 0){
+                            info.sha256 = true;}
+                          else{
+                              perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
+                              exit(-1); } } }
+              h_arg = strtok(argv[i],comma_str);
+          }
+        }
         break;
       case 'v':
         info.flag_v = true;
@@ -68,7 +85,7 @@ int check_flags(int number_arguments, char *argv[])
     }
 
   }
-
+  return 0;
 }
 
 int main(int argc, char *argv[])
