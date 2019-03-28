@@ -100,3 +100,23 @@ int main(int argc, char *argv[])
     }
 
 }
+
+setFlagsH(){
+  for (int j = 0; j < strlen(argv[i]); j++) {
+    char comma_str[]=",";
+    char *h_arg;
+
+    h_arg = strtok(argv[i],comma_str);
+    while(h_arg != NULL)
+    {
+      if(strcmp(h_arg,"md5") == 0) info.md5 = true;
+      else if(strcmp(h_arg,"sha1") == 0) info.sha1 = true;
+      else if(strcmp(h_arg,"sha256") == 0) info.sha256 = true;
+      else{
+        perror("error");
+        exit(-1);
+      }
+      h_arg = strtok(argv[i],comma_str);
+    }
+  }
+}
