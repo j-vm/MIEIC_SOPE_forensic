@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define MAX_STRING_LENGTH 255
+
 typedef struct flags{
   bool flag_r,
        flag_h,
@@ -25,7 +27,7 @@ int file_handler(char *file_path, int md5, int sha1, int sha256) //retieves the 
 
     return 1;
 }
-
+/*
 int check_flags(int number_arguments, char *argv[])
 {
 
@@ -39,36 +41,17 @@ int check_flags(int number_arguments, char *argv[])
 
 
   for (int i = 0; i < number_arguments; i++) {
-    if (argv[1][0] != '-'){
+    if (argv[i][0] != '-'){
       perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
       exit(-1);
     }
-    switch (argv[i][2]) {
+    switch (argv[i][1]) {
       case 'r':
         info.flag_r = true;
         break;
       case 'h':
         info.flag_h = true;
         i++;
-        for (int j = 0; j < strlen(argv[i]); j++) {
-          char comma_str[]=",";
-          char *h_arg;
-          h_arg = strtok(argv[i],comma_str);
-
-          while(h_arg != NULL)
-          {
-              if(strcmp(h_arg,"md5") == 0){
-                  info.md5 = true;}
-              else{ if(strcmp(h_arg,"sha1") == 0){
-                      info.sha1 = true;}
-                    else{ if(strcmp(h_arg,"sha256") == 0){
-                            info.sha256 = true;}
-                          else{
-                              perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
-                              exit(-1); } } }
-              h_arg = strtok(argv[i],comma_str);
-          }
-        }
         break;
       case 'v':
         info.flag_v = true;
@@ -85,18 +68,88 @@ int check_flags(int number_arguments, char *argv[])
     }
 
   }
-  return 0;
+
+}*/
+
+
+bool forensicFolder(char fileDirectory[]) {
+  return true;
 }
 
-int main(int argc, char *argv[])
-{
-    if (argc < 1 || argc > 7){
-      perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
+/* Verifies the command structure for the -r */
+bool attemptForensicFolder (int argc, char *argv[]) {
+  const int MIN_LENGTH = 2;
+  const int MAX_LENGTH = 3;
+  const int FOLDER_INDEX = 3;
+  if (argc >= MIN_LENGTH && argc <= MAX_LENGTH) {
+    if (argc == MIN_LENGTH) {
+      char defaultFolder[MAX_STRING_LENGTH];
+      return forensicFolder(defaultFolder);
+    }
+    else if (argc == MAX_LENGTH) { return forensicFolder(argv[MAX_STRING_LENGTH]); }
+  } else {
+    perror("Invalid command structure");
+  }
+}
+
+int main(int argc, char *argv[]) {
+  if (argc < 1 || argc > 7){
+    perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
+    exit(-1);
+  }
+  if (argc > 1){
+    check_flags(argc-1, argv);
+  }
+}
+
+setFlags (int argc, char *argv[]) {
+  const int COMMAND = 1;
+  const int COMMAND_SYMBOL = 0;
+  const int COMMAND_NAME = 1;
+  const int FLAG_ARGUMENT = 1;
+  
+
+  int argindex = 1;
+  while (argindex < argc) {
+    char commandSymbol = argv[argindex][COMMAND_SYMBOL];
+    char commandName = argv[argindex][COMMAND_NAME];
+    if (commandSymbol != '-') {
+      perror('Command exited no command symbol found');
       exit(-1);
     }
-
-    if (argc > 1){
-      check_flags(argc-1, argv);
+    int indexJump = setFlag(commandName);
+    if (indexJump == 2) {
+      char nextArgument[MAX_STRING_LENGTH] = argv[argindex + FLAG_ARGUMENT];
+      if (commandName == 'h') setFlagsH(nextArgument);
+      if (commandName == 'o') setFlagsO(nextArgument);
     }
+    argindex += indexJump;
+  }
+}
 
+int setFlag (char commandName) {
+  if (commandName == 'r') {
+    info.flag_r = true;
+    return 1;
+  }
+  else if (commandName == 'h') { 
+    info.flag_h = true;
+    return 2;
+  }
+  else if (commandName == 'v') info.flag_v = true;
+  else if (commandName == 'o') info.flag_o = true;
+  else if (commandName == 'm') info.md5 = true;
+  else if (commandName == '1') info.sha1 = true;
+  else if (commandName == '2') info.sha256 = true;
+}
+void setFlagsH (char * argument) {
+  setFlag("md5");
+}
+void setFlagsO (char * argument) {
+
+}
+char getDefaultFolder() {
+  // Do pwd
+  char array = '/';
+  return array;
 }
