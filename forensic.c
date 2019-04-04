@@ -113,17 +113,8 @@ bool attemptForensicFolder (int argc, char *argv[]) {
   }
 }
 
-int main(int argc, char *argv[]) {
-  if (argc < 1 || argc > 7){
-    perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
-    exit(-1);
-  }
-  if (argc > 1){
-    check_flags(argc-1, argv);
-  }
-}
 
-setFlags (int argc, char *argv[]) {
+void setFlags (int argc, char *argv[]) {
   const int COMMAND = 1;
   const int COMMAND_SYMBOL = 0;
   const int COMMAND_NAME = 1;
@@ -180,10 +171,20 @@ void setFlagsH (char * argument) {
 }
 
 void setFlagsO (char * argument) {
-
+  
 }
 char getDefaultFolder() {
   // Do pwd
   char array = '/';
   return array;
+}
+
+int main(int argc, char *argv[]) {
+  if (argc < 1 || argc > 7){
+    perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
+    exit(-1);
+  }
+  if (argc > 1){
+    check_flags(argc-1, argv);
+  }
 }
