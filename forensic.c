@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include <dirent.h>
+
 #define MAX_STRING_LENGTH 255
 
 typedef struct flags{
@@ -72,8 +74,27 @@ int check_flags(int number_arguments, char *argv[])
 }*/
 
 
-bool forensicFolder(char fileDirectory[]) {
-  return true;
+bool forensicFolder (char fileDirectory[]) {
+  DIR *dirp;
+  struct dirent *direntp;
+  struct stat stat_buf;
+  if ((dirp = opendir(fileDirectory)) == NULL) {
+    perror(fileDirectory);
+    exit(2);
+  }
+  while ((direntp = readdir( dirp)) != NULL) {
+    if (lstat(direntp->d_name, &stat_buf) == -1) {
+      perror("lstat ERROR");
+      exit(3);
+    }
+    if (S_ISREG(stat_buf.st_mode)) {
+      // call normal for one file forensicFile(stat_buf->d_name)  file_handler ?
+    } else if (S_ISDIR(stat_buf.st_mode)) {
+      if(fork() > 0) forensicFolder(stat_buf->d_name)
+    } else;
+    // printf("%-25s - %s\n", direntp->d_name, str);
+  }
+  closedir(dirp);
 }
 
 /* Verifies the command structure for the -r */
@@ -143,10 +164,12 @@ int setFlag (char commandName) {
   else if (commandName == '2') info.sha256 = true;
 }
 void setFlagsH (char * argument) {
-  setFlag("md5");
+  setFlag("m");
+  setFlag("1");
+  setFlag("2");
 }
 void setFlagsO (char * argument) {
-
+  
 }
 char getDefaultFolder() {
   // Do pwd
