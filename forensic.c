@@ -165,21 +165,20 @@ int setFlag (char commandName) {
 }
 void setFlagsH (char * argument) {
   char comma_str[]=",";
-  char *h_arg;
 
-  h_arg = strtok(argv[i],comma_str);
-  while(h_arg != NULL)
-  {
-      if(strcmp(h_arg,"md5") == 0) setFlag("m");
-      else if(strcmp(h_arg,"sha1") == 0) setFlag("1");
-      else if(strcmp(h_arg,"sha256") == 0) setFlag("2")
+  char *h_arg = strtok(argument,comma_str);
+  while(argument != NULL){
+      if(strcmp(argument,"md5") == 0) setFlag("m");
+      else if(strcmp(argument,"sha1") == 0) setFlag("1");
+      else if(strcmp(argument,"sha256") == 0) setFlag("2")
       else{
         perror("error");
         exit(-1);
       }
-      h_arg = strtok(argv[i],comma_str);
+      argument = strtok(argv[i],comma_str);
   }
 }
+
 void setFlagsO (char * argument) {
 
 }
