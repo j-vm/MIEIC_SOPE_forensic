@@ -18,7 +18,7 @@ typedef struct flags{
        md5,
        sha1,
        sha256;
-  char outputfile[50];
+  char *outputfile;
 }flags;
 
 flags info;
@@ -114,6 +114,44 @@ bool attemptForensicFolder (int argc, char *argv[]) {
 }
 
 
+int setFlag (char commandName) {
+  if (commandName == 'r') {
+    info.flag_r = true;
+    return 1;
+  }
+  else if (commandName == 'h') {
+    info.flag_h = true;
+    return 2;
+  }
+  else if (commandName == 'v') info.flag_v = true;
+  else if (commandName == 'o') info.flag_o = true;
+  else if (commandName == 'm') info.md5 = true;
+  else if (commandName == '1') info.sha1 = true;
+  else if (commandName == '2') info.sha256 = true;
+}
+
+void setFlagsH (char * argument) {
+  char comma_str[]=",";
+
+  char *h_arg = strtok(argument,comma_str);
+  while(argument != NULL){
+      if(strcmp(argument,"md5") == 0) setFlag("m");
+      else if(strcmp(argument,"sha1") == 0) setFlag("1");
+      else if(strcmp(argument,"sha256") == 0) setFlag("2");
+      else{
+        perror("error");
+        exit(-1);
+      }
+      argument = strtok(argument,comma_str);
+  }
+}
+
+
+
+void setFlagsO (char * argument) {
+  void *trash = memcpy( info.outputfile, argument, strlen(argument)+1);
+}
+
 void setFlags (int argc, char *argv[]) {
   const int COMMAND = 1;
   const int COMMAND_SYMBOL = 0;
@@ -139,40 +177,7 @@ void setFlags (int argc, char *argv[]) {
   }
 }
 
-int setFlag (char commandName) {
-  if (commandName == 'r') {
-    info.flag_r = true;
-    return 1;
-  }
-  else if (commandName == 'h') {
-    info.flag_h = true;
-    return 2;
-  }
-  else if (commandName == 'v') info.flag_v = true;
-  else if (commandName == 'o') info.flag_o = true;
-  else if (commandName == 'm') info.md5 = true;
-  else if (commandName == '1') info.sha1 = true;
-  else if (commandName == '2') info.sha256 = true;
-}
-void setFlagsH (char * argument) {
-  char comma_str[]=",";
 
-  char *h_arg = strtok(argument,comma_str);
-  while(argument != NULL){
-      if(strcmp(argument,"md5") == 0) setFlag("m");
-      else if(strcmp(argument,"sha1") == 0) setFlag("1");
-      else if(strcmp(argument,"sha256") == 0) setFlag("2")
-      else{
-        perror("error");
-        exit(-1);
-      }
-      argument = strtok(argv[i],comma_str);
-  }
-}
-
-void setFlagsO (char * argument) {
-  
-}
 char getDefaultFolder() {
   // Do pwd
   char array = '/';
