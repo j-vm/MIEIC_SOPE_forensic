@@ -128,7 +128,7 @@ setFlags (int argc, char *argv[]) {
   const int COMMAND_SYMBOL = 0;
   const int COMMAND_NAME = 1;
   const int FLAG_ARGUMENT = 1;
-  
+
 
   int argindex = 1;
   while (argindex < argc) {
@@ -153,7 +153,7 @@ int setFlag (char commandName) {
     info.flag_r = true;
     return 1;
   }
-  else if (commandName == 'h') { 
+  else if (commandName == 'h') {
     info.flag_h = true;
     return 2;
   }
@@ -164,12 +164,24 @@ int setFlag (char commandName) {
   else if (commandName == '2') info.sha256 = true;
 }
 void setFlagsH (char * argument) {
-  setFlag("m");
-  setFlag("1");
-  setFlag("2");
+  char comma_str[]=",";
+  char *h_arg;
+
+  h_arg = strtok(argv[i],comma_str);
+  while(h_arg != NULL)
+  {
+      if(strcmp(h_arg,"md5") == 0) setFlag("m");
+      else if(strcmp(h_arg,"sha1") == 0) setFlag("1");
+      else if(strcmp(h_arg,"sha256") == 0) setFlag("2")
+      else{
+        perror("error");
+        exit(-1);
+      }
+      h_arg = strtok(argv[i],comma_str);
+  }
 }
 void setFlagsO (char * argument) {
-  
+
 }
 char getDefaultFolder() {
   // Do pwd
