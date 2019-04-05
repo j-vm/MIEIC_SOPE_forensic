@@ -157,7 +157,7 @@ void getHex(int argc, char *argv[]) {
 
 void printArrays(int time){
   bool changed = true;
-  for(size_t i = 0; i < 256; i++)
+  for(size_t i = 0; i < 4096; i++)
   {
     if( name[i] == '\n' ){ name[i] = 0; }
     if( infor[i] == '\n' ) { infor[i] = 0; }
