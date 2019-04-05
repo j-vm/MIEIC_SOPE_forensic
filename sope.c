@@ -156,11 +156,13 @@ void getHex(int argc, char *argv[]) {
 } 
 
 void printArrays(int time){
+  bool changed = true;
   for(size_t i = 0; i < 256; i++)
   {
     if( name[i] == '\n' ){ name[i] = 0; }
     if( infor[i] == '\n' ) { infor[i] = 0; }
     if( infor[i] == '+' ) { infor[i] = 0; }
+    if( infor[i-1] > 47 && infor[i+1] < 58 && infor[i] == ' ' && changed) { infor[i] = 'T'; changed = false;}
     if( hex[i] == '\n' ) { hex[i] = 0; }
     if(hex[i] == ' ' ) { hex[i] = 0; }
   }
