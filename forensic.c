@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include <dirent.h>
 
@@ -85,7 +86,7 @@ bool forensicFolder (char fileDirectory[]) {
     if (S_ISREG(stat_buf.st_mode)) {
       // call normal for one file forensicFile(stat_buf->d_name)  file_handler ?
     } else if (S_ISDIR(stat_buf.st_mode)) {
-      if(fork() > 0) forensicFolder(stat_buf->d_name)
+      if(fork() > 0) forensicFolder(direntp->d_name);
     } else;
     // printf("%-25s - %s\n", direntp->d_name, str);
   }
@@ -130,9 +131,9 @@ void setFlagsH (char * argument) {
 
   char *h_arg = strtok(argument,comma_str);
   while(argument != NULL){
-      if(strcmp(argument,"md5") == 0) setFlag("m");
-      else if(strcmp(argument,"sha1") == 0) setFlag("1");
-      else if(strcmp(argument,"sha256") == 0) setFlag("2");
+      if(strcmp(argument,"md5") == 0) setFlag('m');
+      else if(strcmp(argument,"sha1") == 0) setFlag('1');
+      else if(strcmp(argument,"sha256") == 0) setFlag('2');
       else{
         perror("error");
         exit(-1);
@@ -159,12 +160,13 @@ void setFlags (int argc, char *argv[]) {
     char commandSymbol = argv[argindex][COMMAND_SYMBOL];
     char commandName = argv[argindex][COMMAND_NAME];
     if (commandSymbol != '-') {
-      perror('Command exited no command symbol found');
+      perror("Command exited no command symbol found");
       exit(-1);
     }
     int indexJump = setFlag(commandName);
     if (indexJump == 2) {
-      char nextArgument[MAX_STRING_LENGTH] = argv[argindex + FLAG_ARGUMENT];
+      char  *nextArgument = NULL;
+      memcpy( nextArgument, argv[argindex + FLAG_ARGUMENT],strlen(argv[argindex + FLAG_ARGUMENT])+1);
       if (commandName == 'h') setFlagsH(nextArgument);
       if (commandName == 'o') setFlagsO(nextArgument);
     }
@@ -185,6 +187,6 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
   if (argc > 1){
-    check_flags(argc-1, argv);
+    setFlags (argc, argv);
   }
 }
