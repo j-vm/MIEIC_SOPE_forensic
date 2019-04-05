@@ -259,12 +259,53 @@ void getFileInfoHash(char file_name[], char hash_command[])
 	getHash(file_name, hash_command);
 }
 
+void check_flags(char command_line[])
+{
+	info.flag_r = false;
+	info.flag_h = false;
+	info.flag_v = false;
+	info.flag_o = false;
+
+	if (command_line[0] != '-')
+	{
+		perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
+		exit(-1);
+	}
+
+	switch (command_line[1])
+	{
+	case 'r':
+		info.flag_r = true;
+		break;
+
+	case 'h':
+		info.flag_h = true;
+		break;
+
+	case 'v':
+		info.flag_v = true;
+		break;
+
+	case 'o':
+		info.flag_o = true;
+		break;
+
+	default:
+		perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
+		exit(-1);
+		break;
+	}
+}
+
 void main(int argc, char *argv[])
 {
 	//forensic -o sha1,sha256 a.txt
+	char command_line[256];
 	char file_name[256];
 	char hash_command[256];
+	strncpy(command_line, argv[1], 256);
 	strncpy(file_name, argv[3], 256);
+	check_flags(command_line);
 	if (argv[2] != NULL)
 	{
 		strncpy(hash_command, argv[2], 256);
@@ -284,59 +325,9 @@ int file_handler(char *file_path, int md5, int sha1, int sha256) //retieves the 
 
     return 1;
 }
+*/
 
-void check_flags(int number_arguments, char *argv[])
-{
-
-  info.flag_r = false,
-  info.flag_h = false,
-  info.flag_v = false,
-  info.flag_o = false,
-  info.md5 = false,
-  info.sha1 = false,
-  info.sha256 = false;
-
-
-  for (int i = 0; i < number_arguments; i++) {
-    
-    if (argv[1][0] != '-'){
-      perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
-      exit(-1);
-    }
-
-    switch (argv[i][2]) {
-      case 'r':
-        info.flag_r = true;
-        break;
-
-      case 'h':
-        info.flag_h = true;
-        forensicH();
-        i++;
-        break;
-
-      case 'v':
-        info.flag_v = true;
-        break;
-
-      case 'o':
-        info.flag_o = true;
-        i++;
-        strcpy(info.outputfile, argv[i]);
-        break;
-
-      default:
-        perror("Input error\nExpected use: forensic [-r] [-h [md5[,sha1[,sha256]]] [-o <outfile>] [-v] <file|dir>");
-        exit(-1);
-        break;
-
-    }
-
-  }
-
-}
-
-
+/*
 int main(int argc, char *argv[])
 {
    
