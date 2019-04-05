@@ -21,7 +21,6 @@
 char name[4096];
 char infor[4096];
 char hex[4096];
-int namebytes, inforbytes, hexbytes;
 int status;
 
 typedef struct flags{
@@ -73,14 +72,15 @@ void getName(int argc, char *argv[]){
     char *cmd = "file";
     char *argvs[3];
     argvs[0] = "file";
-    argvs[1] = argv[1];
-    argvs[2] = NULL;  
+    argvs[1] = "-F,";
+    argvs[2] = argv[1];
+    argvs[3] = NULL;  
     execvp(cmd,argvs);
     die("execlp");
 
   } else {
     close(link[1]);
-    int namebytes = read(link[0], name , sizeof(name));
+    read(link[0], name , sizeof(name));
     //printf("%.*s",namebytes,name);
 
   }
@@ -114,10 +114,9 @@ void getInfo(int argc, char *argv[]) {
   } else {
     char foo[4096];
     close(link[1]);
-    int inforbytes = read(link[0], infor, sizeof(infor));
+    read(link[0], infor, sizeof(infor));
     //printf("%.*s",inforbytes,infor);
 
-    
     if(info.flag_v){
       stop = get_current_time_with_ms();
       long sub = stop - start;
@@ -151,34 +150,35 @@ void getHex(int argc, char *argv[]) {
 
   } else {
     close(link[1]);
-    int hexbytes = read(link[0], hex, sizeof(hex));
+    read(link[0], hex, sizeof(hex));
     //printf("%.*s",hexbytes,hex);
   }
 } 
 
 void printArrays(int time){
-
   for(size_t i = 0; i < 256; i++)
   {
     if( name[i] == '\n' ){ name[i] = 0; }
     if( infor[i] == '\n' ) { infor[i] = 0; }
+    if( infor[i] == '+' ) { infor[i] = 0; }
     if( hex[i] == '\n' ) { hex[i] = 0; }
+    if(hex[i] == ' ' ) { hex[i] = 0; }
   }
   printf("%s, %s, %s \n",name,infor,hex);
-  /*sleep(1);
-  printf("%s",infor);
-  sleep(1);
-  printf("%s",hex);*/
+  sleep(time);
+}
+
+void getFileInfo(int argc, char *argv[]){
+  getName(argc,argv);
+  getInfo(argc,argv);
+  getHex(argc,argv);
 }
 
 void main(int argc, char *argv[]){
   //forensic -o sha1,sha256 a.txt
-  getName(argc,argv);
-  getInfo(argc,argv);
-  getHex(argc,argv);
+  getFileInfo(argc,argv);
   printArrays(1);
-   
-
+  
 }
 
 /*
