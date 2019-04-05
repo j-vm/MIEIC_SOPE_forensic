@@ -86,7 +86,7 @@ bool forensicFolder (char fileDirectory[]) {
     if (S_ISREG(stat_buf.st_mode)) {
       // call normal for one file forensicFile(stat_buf->d_name)  file_handler ?
     } else if (S_ISDIR(stat_buf.st_mode)) {
-      if(fork() > 0) forensicFolder(stat_buf->d_name);
+      if(fork() > 0) forensicFolder(direntp->d_name);
     } else;
     // printf("%-25s - %s\n", direntp->d_name, str);
   }
